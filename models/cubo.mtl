@@ -1,0 +1,7 @@
+# cubo.mtl
+newmtl Vermelho
+Ka 1.0 0.0 0.0      # Cor ambiental (vermelho)
+Kd 1.0 0.0 0.0      # Cor difusa (vermelho)
+Ks 0.3 0.3 0.3      # Cor especular (cinza suave)
+d 1.0               # Opacidade (1 = totalmente opaco)
+illum 2             # Modelo de iluminação (2 = iluminação difusa + especular)

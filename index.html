@@ -12,13 +12,18 @@
   <body>
     <canvas class="webgl"></canvas>
     <nav>
-      <a href="/"> Sphere</a>
+      <a href="/">Spin it</a>
       <ul>
-        <li>Explore</li>
-        <li>Create</li>
+        <li class="active cube">Cube</li>
+        <li class="sphere">Sphere</li>
+        <li class="head">Head</li>
       </ul>
     </nav>
-    <h1 class="title">Give it a spin</h1>
+    <div class="loading-stage">
+      <div class="spinner"></div>
+      <div class="progress-text">Loading...</div>
+    </div>
+    <h1 class="title">Kube West</h1>
     <script type="module" src="/main.js"></script>
   </body>
 </html>
