@@ -4,6 +4,19 @@ import gsap from "gsap";
 import { OBJLoader } from "three/examples/jsm/Addons.js";
 import { MTLLoader } from "three/examples/jsm/Addons.js";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { FlyControls } from "three/examples/jsm/Addons.js";
+
+const loadingStage = document.querySelector(".loading-stage");
+
+function hideLoadingStage() {
+  loadingStage.style.display = "none";
+}
+
+function showLoadingStage() {
+  loadingStage.style.display = "flex";
+}
+
+showLoadingStage();
 
 //scene
 const scene = new THREE.Scene();
@@ -33,20 +46,52 @@ const sphere = new THREE.Mesh(SphereGeometry, sphereMaterial);
 let head = null;
 const mtlLoader = new MTLLoader();
 mtlLoader.setPath("models/");
-mtlLoader.load("cubo.mtl", function (material) {
+mtlLoader.load("headCompMesh.mtl", function (material) {
   material.preload();
 
   var objLoader = new OBJLoader();
   objLoader.setMaterials(material);
   objLoader.setPath("models/");
   objLoader.load(
-    "headComp.obj",
+    "headCompMesh.obj",
     function (object) {
       head = object;
       head.scale.set(1, 1, 1);
-      head.rotation.set(-90, 0, 0);
+      head.rotation.set(4.7, 0, 0);
       head.position.set(0, 0, 0);
       head.visible = true;
+      // scene.add(head);
+    },
+    function (xhr) {
+      const percentLoaded = (xhr.loaded / xhr.total) * 100;
+      document.querySelector(
+        ".progress-text"
+      ).textContent = `Loading... ${percentLoaded.toFixed(2)}%`;
+    },
+    function (error) {
+      console.error("Erro ao carregar o modelo: ", error);
+    }
+  );
+});
+
+// create a body
+let body = null;
+const bodyMtlLoader = new MTLLoader();
+bodyMtlLoader.setPath("models/");
+bodyMtlLoader.load("chestComp.mtl", function (material) {
+  material.preload();
+
+  var bodyObjLoader = new OBJLoader();
+  bodyObjLoader.setMaterials(material);
+  bodyObjLoader.setPath("models/");
+  bodyObjLoader.load(
+    "chestComp.obj",
+    function (object) {
+      body = object;
+      body.scale.set(1, 1, 1);
+      body.rotation.set(4.7, 0, 0);
+      body.position.set(0, 0, 0);
+      body.visible = true;
       // scene.add(head);
       hideLoadingStage();
     },
@@ -66,9 +111,9 @@ mtlLoader.load("cubo.mtl", function (material) {
 const light = new THREE.AmbientLight(0xffffff);
 scene.add(light);
 
-const pointLight = new THREE.PointLight(0xffcc00, 250, 100);
+const pointLight = new THREE.PointLight(0xffdd55, 300, 100);
 pointLight.position.set(10, 10, 10);
-const pointLightBack = new THREE.PointLight(0xffcc00, 250, 100);
+const pointLightBack = new THREE.PointLight(0xffdd55, 300, 100);
 pointLightBack.position.set(-10, -10, -10);
 // scene.add(pointLight);
 
@@ -92,7 +137,7 @@ const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.enablePan = false;
 controls.autoRotate = true;
-controls.autoRotateSpeed = 7;
+controls.autoRotateSpeed = 5;
 
 //Resize
 window.addEventListener("resize", () => {
@@ -132,71 +177,77 @@ const animateObject = (object, duration, scale) => {
 animateNav(1);
 animateObject(cube, 1, 1);
 
+const addToScene = (object) => {
+  scene.remove(cube);
+  scene.remove(sphere);
+  scene.remove(head);
+  scene.remove(body);
+  scene.add(object);
+};
+
 // get cube, sphere and head nav items and add event listeners
 const cubeNav = document.querySelector(".cube");
 const sphereNav = document.querySelector(".sphere");
 const headNav = document.querySelector(".head");
+const bodyNav = document.querySelector(".body");
 const title = document.querySelector(".title");
 
 cubeNav.addEventListener("click", () => {
-  scene.remove(sphere);
-  scene.remove(head);
-  scene.add(cube);
+  addToScene(cube);
   scene.remove(pointLight);
   scene.remove(pointLightBack);
 
-  gsap.to(cube.rotation, { duration: 1, x: 0, y: 0, z: 0 });
   animateObject(cube, 0.5, 1);
 
   cubeNav.classList.add("active");
   sphereNav.classList.remove("active");
   headNav.classList.remove("active");
+  bodyNav.classList.remove("active");
   //change title text
   title.innerHTML = "Kube West";
 });
 
 sphereNav.addEventListener("click", () => {
-  scene.remove(cube);
-  scene.remove(head);
-  scene.add(sphere);
+  addToScene(sphere);
   scene.remove(pointLight);
   scene.remove(pointLightBack);
 
-  gsap.to(sphere.rotation, { duration: 1, x: 0, y: 0, z: 0 });
   animateObject(sphere, 0.5, 1);
 
   sphereNav.classList.add("active");
   cubeNav.classList.remove("active");
   headNav.classList.remove("active");
+  bodyNav.classList.remove("active");
 
   title.innerHTML = "Tyler, The Sphere";
 });
 
 headNav.addEventListener("click", () => {
-  scene.remove(cube);
-  scene.remove(sphere);
-  scene.add(head);
+  addToScene(head);
   scene.add(pointLight);
   scene.add(pointLightBack);
 
-  gsap.to(head.rotation, { duration: 1, x: -90, y: 0, z: 0 });
   animateObject(head, 0.5, 1);
 
   headNav.classList.add("active");
   cubeNav.classList.remove("active");
   sphereNav.classList.remove("active");
+  bodyNav.classList.remove("active");
 
   title.innerHTML = "The Head";
 });
 
-const loadingStage = document.querySelector(".loading-stage");
+bodyNav.addEventListener("click", () => {
+  addToScene(body);
+  scene.add(pointLight);
+  scene.add(pointLightBack);
 
-function hideLoadingStage() {
-  loadingStage.style.display = "none";
-}
+  animateObject(body, 0.5, 1);
 
-function showLoadingStage() {
-  loadingStage.style.display = "flex";
-}
+  bodyNav.classList.add("active");
+  cubeNav.classList.remove("active");
+  sphereNav.classList.remove("active");
+  headNav.classList.remove("active");
 
-showLoadingStage();
+  title.innerHTML = "The Body";
+});
