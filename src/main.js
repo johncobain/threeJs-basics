@@ -1,10 +1,9 @@
 import * as THREE from "three";
-import "./style.css";
+import "./styles/style.css";
 import gsap from "gsap";
 import { OBJLoader } from "three/examples/jsm/Addons.js";
 import { MTLLoader } from "three/examples/jsm/Addons.js";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
-import { FlyControls } from "three/examples/jsm/Addons.js";
 
 const loadingStage = document.querySelector(".loading-stage");
 
@@ -22,7 +21,7 @@ showLoadingStage();
 const scene = new THREE.Scene();
 
 //Create our cube
-const cubeTexture = new THREE.TextureLoader().load("textures/can-ye.jpg");
+const cubeTexture = new THREE.TextureLoader().load("./src/textures/can-ye.jpg");
 cubeTexture.colorSpace = THREE.SRGBColorSpace;
 const cubeGeometry = new THREE.BoxGeometry(3, 3, 3);
 const cubeMaterial = new THREE.MeshStandardMaterial({
@@ -33,7 +32,9 @@ const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 scene.add(cube);
 
 //create a sphere
-const sphereTexture = new THREE.TextureLoader().load("textures/tyler.jpg");
+const sphereTexture = new THREE.TextureLoader().load(
+  "./src/textures/tyler.jpg"
+);
 sphereTexture.colorSpace = THREE.SRGBColorSpace;
 const SphereGeometry = new THREE.SphereGeometry(3, 32, 32);
 const sphereMaterial = new THREE.MeshStandardMaterial({
@@ -45,13 +46,13 @@ const sphere = new THREE.Mesh(SphereGeometry, sphereMaterial);
 // create a head
 let head = null;
 const mtlLoader = new MTLLoader();
-mtlLoader.setPath("models/");
+mtlLoader.setPath("./src/models/");
 mtlLoader.load("headCompMesh.mtl", function (material) {
   material.preload();
 
   var objLoader = new OBJLoader();
   objLoader.setMaterials(material);
-  objLoader.setPath("models/");
+  objLoader.setPath("./src/models/");
   objLoader.load(
     "headCompMesh.obj",
     function (object) {
@@ -74,16 +75,16 @@ mtlLoader.load("headCompMesh.mtl", function (material) {
   );
 });
 
-// create a body
+// // create a body
 let body = null;
 const bodyMtlLoader = new MTLLoader();
-bodyMtlLoader.setPath("models/");
+bodyMtlLoader.setPath("./src/models/");
 bodyMtlLoader.load("chestComp.mtl", function (material) {
   material.preload();
 
   var bodyObjLoader = new OBJLoader();
   bodyObjLoader.setMaterials(material);
-  bodyObjLoader.setPath("models/");
+  bodyObjLoader.setPath("./src/models/");
   bodyObjLoader.load(
     "chestComp.obj",
     function (object) {
